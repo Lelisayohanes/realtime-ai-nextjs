@@ -5,10 +5,9 @@ import { ItemType } from '@openai/realtime-api-beta/dist/lib/client.js';
 import { WavRecorder, WavStreamPlayer } from '../lib/wavtools/index.js';
 import { instructions } from '../utils/conversation_config';
 import { WavRenderer } from '../utils/wav_renderer';
-import { X, Edit, Zap, ArrowUp, ArrowDown, User } from 'react-feather';
+import { X,  Zap, ArrowUp, ArrowDown, User } from 'react-feather';
 import { Button } from '../components/button/Button';
 import { Toggle } from '../components/toggle/Toggle';
-import { Moon, Sun } from 'lucide-react';
 import InternalHeader from '../components/internalheader/InternalHeader';
 import LeftChatHistory from '../components/chathistory/ChatHistory';
 import AIAgents from '../components/aiagents/AIAgents';
@@ -16,20 +15,6 @@ import { mockChatHistory } from '../data/mockChatHistory';
 import { ChatHistory } from '../types/ChatHistory';
 
 const LOCAL_RELAY_SERVER_URL: string = process.env.NEXT_PUBLIC_LOCAL_RELAY_SERVER_URL || '';
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-  location?: string;
-  temperature?: {
-    value: number;
-    units: string;
-  };
-  wind_speed?: {
-    value: number;
-    units: string;
-  };
-}
 
 interface RealtimeEvent {
   time: string;
@@ -78,7 +63,7 @@ export default function ChatPage() {
   }, [apiKey]);
 
   // State management
-  const [history, setHistory] = React.useState<ChatHistory[]>(mockChatHistory);
+  const [history] = React.useState<ChatHistory[]>(mockChatHistory);
   const [agents] = React.useState<Agent[]>([
     { 
       id: "1", 
@@ -126,17 +111,12 @@ export default function ChatPage() {
   const [canPushToTalk, setCanPushToTalk] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') === 'dark';
-    }
-    return false;
-  });
+
 
   // Replace the direct window usage with the custom hook
-  const [position, setPosition] = usePosition();
+  const [position, ] = usePosition();
   const [dragging, setDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [, setDragOffset] = useState({ x: 0, y: 0 });
   
   // Utility functions
   const formatTime = useCallback((timestamp: string) => {
@@ -226,10 +206,6 @@ export default function ChatPage() {
     await wavStreamPlayer.interrupt();
   }, []);
 
-  const deleteConversationItem = useCallback(async (id: string) => {
-    const client = clientRef.current;
-    client.deleteItem(id);
-  }, []);
 
   const startRecording = async () => {
     setIsRecording(true);
@@ -286,9 +262,7 @@ export default function ChatPage() {
   };
 
   // Drag and Drop handlers
-  const handleDragStart = (e: React.DragEvent, agentId: string) => {
-    e.dataTransfer.setData('agentId', agentId);
-  };
+
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -588,7 +562,7 @@ return (
                       Awaiting connection...
                     </div>
                   )}
-                  {realtimeEvents.map((realtimeEvent, i) => (
+                  {realtimeEvents.map((realtimeEvent, ) => (
                     <div 
                       key={realtimeEvent.event.event_id}
                       className="rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
